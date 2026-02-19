@@ -27,6 +27,11 @@ const en = {
   settingsCurrentPath: "Current path", settingsNotDetected: "Not detected",
   settingsStdPaths: "Standard paths: /usr/local/bin/brew · /opt/homebrew/bin/brew · /home/linuxbrew/.linuxbrew/bin/brew",
   settingsLang: "Language", btnClear: "Clear", btnSave: "Save",
+  settingsTabSettings: "Settings", settingsTabAbout: "About", settingsTabLicense: "License",
+  aboutVersion: "Version", aboutDesc: "A native Homebrew package manager GUI for macOS and Linux.",
+  aboutAuthor: "Author", aboutBuiltWith: "Built with Tauri · Vue 3 · TypeScript",
+  aboutLicense: "Released under the MIT License",
+  aboutOpenSource: "Open Source",
   // JS messages
   loadingRefresh: "Refreshing data...",
   logLoaded: (n: number) => `Loaded ${n} packages`,
@@ -134,6 +139,11 @@ const zh: typeof en = {
   settingsCurrentPath: "当前路径", settingsNotDetected: "未检测到",
   settingsStdPaths: "标准路径：/usr/local/bin/brew · /opt/homebrew/bin/brew · /home/linuxbrew/.linuxbrew/bin/brew",
   settingsLang: "语言", btnClear: "清除", btnSave: "保存",
+  settingsTabSettings: "设置", settingsTabAbout: "关于", settingsTabLicense: "许可证",
+  aboutVersion: "版本", aboutDesc: "适用于 macOS 和 Linux 的原生 Homebrew 包管理器 GUI。",
+  aboutAuthor: "作者", aboutBuiltWith: "基于 Tauri · Vue 3 · TypeScript 构建",
+  aboutLicense: "以 MIT 许可证开源发布",
+  aboutOpenSource: "开源项目",
   // JS messages
   loadingRefresh: "正在刷新数据...",
   logLoaded: (n: number) => `已加载 ${n} 个包`,

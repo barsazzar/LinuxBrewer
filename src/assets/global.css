@@ -421,6 +421,52 @@
   margin: 0; border-radius: 0 0 8px 8px;
 }
 
+/* ── 设置 Tabs ───────────────────────────────────────────────────────────────── */
+.settings-tabs {
+  display: flex;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 18px;
+  flex-shrink: 0;
+}
+.settings-tab-btn {
+  padding: 10px 14px;
+  background: none; border: none; border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-size: 13px; font-weight: 500; color: #64748b;
+  cursor: pointer; transition: color 0.12s, border-color 0.12s;
+}
+.settings-tab-btn:hover { color: #0f172a; }
+.settings-tab-btn.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+
+/* ── About 页 ─────────────────────────────────────────────────────────────────── */
+.about-body { text-align: center; padding-top: 8px !important; }
+.about-icon {
+  width: 60px; height: 60px;
+  background: #eff6ff; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px; color: #3b82f6;
+}
+.about-icon svg { width: 32px; height: 32px; }
+.about-name { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+.about-version { font-size: 12px; color: #94a3b8; margin-bottom: 14px; }
+.about-desc { font-size: 13px; color: #374151; line-height: 1.6; margin-bottom: 14px; }
+.about-meta { font-size: 12px; color: #64748b; line-height: 2; margin-bottom: 16px; }
+.open-source-badge {
+  display: inline-block; padding: 3px 14px;
+  background: #f0fdf4; color: #16a34a;
+  border: 1px solid #bbf7d0; border-radius: 99px;
+  font-size: 12px; font-weight: 500;
+}
+
+/* ── License 页 ──────────────────────────────────────────────────────────────── */
+.license-text {
+  font-family: 'SF Mono', Consolas, monospace;
+  font-size: 11px; line-height: 1.7; color: #374151;
+  white-space: pre-wrap; word-break: break-word;
+  background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+  padding: 14px; margin: 0;
+}
+
 /* ── 设置面板 ────────────────────────────────────────────────────────────────── */
 .hint { font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.5; }
 .full-input {
