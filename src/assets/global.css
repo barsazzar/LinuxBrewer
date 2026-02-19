@@ -150,6 +150,15 @@
 .panel-header h3 { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
 .count { font-size: 12px; color: #94a3b8; font-weight: 400; }
 .header-controls { display: flex; align-items: center; gap: 8px; }
+.panel-title-group { display: flex; align-items: center; gap: 2px; }
+
+.panel-desc {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: #eff6ff;
+  border-bottom: 1px solid #bfdbfe;
+  font-size: 12px; color: #1e40af; line-height: 1.5;
+}
 
 /* ── 过滤器 tabs ─────────────────────────────────────────────────────────────── */
 .filter-tabs { display: flex; border: 1px solid #e2e8f0; border-radius: 5px; overflow: hidden; }
@@ -231,6 +240,7 @@
 .icon-btn.danger:hover { background: #fee2e2; color: #dc2626; }
 .icon-btn.small { width: 24px; height: 24px; }
 .icon-btn.small svg { width: 14px; height: 14px; }
+.icon-btn.active { background: #eff6ff; color: #3b82f6; }
 
 .list-empty {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -284,11 +294,14 @@
 /* 环境信息栏 */
 .env-bar {
   flex-shrink: 0;
-  display: flex; align-items: center; gap: 8px;
-  padding: 7px 12px;
+  display: flex; flex-direction: column; gap: 5px;
+  padding: 8px 12px;
   background: white; border: 1px solid #e2e8f0; border-radius: 7px;
 }
+.env-info { display: flex; align-items: center; gap: 6px; }
 .env-label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; flex-shrink: 0; }
+.env-version { font-size: 12px; font-weight: 500; color: #0f172a; }
+.env-path-row { display: flex; align-items: center; gap: 4px; }
 .env-path { font-size: 11px; font-family: 'SF Mono', Consolas, monospace; color: #3b82f6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
 .err-text { font-size: 12px; color: #ef4444; }
 
@@ -381,13 +394,18 @@
 .loading-card p { margin-top: 14px; font-size: 13px; color: #64748b; }
 
 /* ── Spinner ─────────────────────────────────────────────────────────────────── */
+@-webkit-keyframes spin { to { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
 .spinner, .spinner-large {
   border: 3px solid #e2e8f0; border-top-color: #3b82f6;
-  border-radius: 50%; animation: spin .7s linear infinite;
+  border-radius: 50%;
+  -webkit-animation: spin .7s linear infinite;
+  animation: spin .7s linear infinite;
+  will-change: transform;
 }
 .spinner { width: 22px; height: 22px; }
 .spinner-large { width: 44px; height: 44px; border-width: 4px; }
-@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── 模态输出 & 状态 ─────────────────────────────────────────────────────────── */
 .modal-status {

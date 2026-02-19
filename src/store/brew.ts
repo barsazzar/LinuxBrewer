@@ -40,7 +40,7 @@ function pushLog(text: string) {
   logs.value.unshift(`[${ts}] ${text}`)
 }
 
-function showToast(msg: string) {
+export function showToast(msg: string) {
   toastMsg.value = msg
   if (toastTimer) clearTimeout(toastTimer)
   toastTimer = setTimeout(() => { toastMsg.value = "" }, 3000)

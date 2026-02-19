@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { t } from "../i18n"
-import { loading, outdated, showSearch, showLogs, showPathSettings, refreshAll, upgradeAll, runDoctor } from "../store/brew"
+import { loading, outdated, showSearch, showLogs, showPathSettings, refreshAll, upgradeAll, runDoctor, status } from "../store/brew"
 </script>
 
 <template>
@@ -12,6 +12,7 @@ import { loading, outdated, showSearch, showLogs, showPathSettings, refreshAll, 
           <path d="M8 6V4M12 6V4M16 6V4M8 12h8M8 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <span>Brew Manager</span>
+        <span v-if="status?.ok && status?.data?.version" class="version-badge">{{ status.data.version }}</span>
       </div>
     </div>
 
