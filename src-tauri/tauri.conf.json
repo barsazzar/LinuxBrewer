@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "taruivue",
+  "productName": "LinuxBrewer",
   "version": "0.1.0",
   "identifier": "com.ding.taruivue",
   "build": {
