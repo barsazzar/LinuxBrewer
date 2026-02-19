@@ -1,18 +1,21 @@
 # Brew Manager
 
-A desktop GUI for [Homebrew (Linuxbrew)](https://brew.sh/) on Linux, built with Tauri v2, Vue 3, and TypeScript.
+A desktop GUI for [Homebrew (Linuxbrew)](https://brew.sh/) on Linux and macOS, built with Tauri v2, Vue 3, and TypeScript.
 
 ## Features
 
 - **Installed packages** — browse all formulas and casks with version info; filter by kind or search by name
 - **Upgradable packages** — see what's outdated; upgrade individually or all at once
 - **Search & install** — search the Homebrew registry and install with one click
-- **Taps** — list, add, and remove taps
+- **Taps** — list, add, and remove third-party taps
 - **Real-time output** — long-running commands (install, upgrade, doctor…) stream output line-by-line in a live modal
 - **Batch operations** — select multiple packages for bulk uninstall or upgrade
-- **System tray** — minimize to tray; click to restore
+- **System tray** — minimize to tray with live outdated-package count badge
+- **Brew version & path** — toolbar displays the detected brew version; sidebar shows the resolved binary path with a one-click copy button
+- **Panel descriptions** — each panel has an info icon that reveals a brief description of what the panel does
+- **Settings** — tabbed modal with Settings, About, and License tabs; supports custom brew path and language switching
 - **Multilingual** — English / 中文, persisted across sessions
-- **Keyboard shortcuts** — `Ctrl+F` focuses the package filter input; `Escape` closes modals
+- **Keyboard shortcuts** — `Ctrl+R` refresh · `Ctrl+K` search · `Ctrl+F` filter · `Escape` closes modals
 
 ## Tech Stack
 
@@ -81,4 +84,32 @@ The app auto-detects `brew` from the standard Linuxbrew and macOS paths:
 - `/opt/homebrew/bin/brew`
 - `brew` (from `$PATH`)
 
-A custom path can be set in **Settings** if auto-detection fails.
+A custom path can be set in **Settings → Settings tab** if auto-detection fails.
+
+## Author
+
+Ding Li
+
+## License
+
+MIT License
+
+Copyright (c) 2026 Ding Li
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
