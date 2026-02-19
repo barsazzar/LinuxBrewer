@@ -11,13 +11,23 @@ import {
 const inputEl = ref<HTMLInputElement | null>(null)
 onMounted(() => { listSearchRef.value = inputEl.value })
 onUnmounted(() => { listSearchRef.value = null })
+
+const showDesc = ref(false)
 </script>
 
 <template>
   <section class="panel flex-panel">
     <!-- 标题栏 -->
     <div class="panel-header">
-      <h3>{{ t.panelInstalled }} <span class="count">{{ filteredPackages.length }} / {{ packages.length }}</span></h3>
+      <div class="panel-title-group">
+        <h3>{{ t.panelInstalled }} <span class="count">{{ filteredPackages.length }} / {{ packages.length }}</span></h3>
+        <button class="icon-btn small" :class="{ active: showDesc }" @click="showDesc = !showDesc">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
       <div class="header-controls">
         <div class="filter-tabs">
           <button class="filter-tab" :class="{ active: filterKind === 'all' }" @click="filterKind = 'all'">{{ t.filterAll }}</button>
@@ -32,6 +42,9 @@ onUnmounted(() => { listSearchRef.value = null })
         />
       </div>
     </div>
+
+    <!-- 面板描述 -->
+    <div v-if="showDesc" class="panel-desc">{{ t.descInstalled }}</div>
 
     <!-- 快速安装行 -->
     <div class="install-row">

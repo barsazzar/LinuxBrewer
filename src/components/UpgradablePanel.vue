@@ -1,13 +1,25 @@
 <script setup lang="ts">
+import { ref } from "vue"
 import { t } from "../i18n"
 import { outdated, loading, upgradeSingle } from "../store/brew"
+
+const showDesc = ref(false)
 </script>
 
 <template>
   <section class="panel sidebar-flex-panel">
     <div class="panel-header">
-      <h3>{{ t.panelUpgradable }} <span class="count">{{ outdated.length }}</span></h3>
+      <div class="panel-title-group">
+        <h3>{{ t.panelUpgradable }} <span class="count">{{ outdated.length }}</span></h3>
+        <button class="icon-btn small" :class="{ active: showDesc }" @click="showDesc = !showDesc">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
     </div>
+    <div v-if="showDesc" class="panel-desc">{{ t.descUpgradable }}</div>
     <div class="upgrade-list">
       <div v-if="outdated.length === 0" class="list-empty small">
         <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
