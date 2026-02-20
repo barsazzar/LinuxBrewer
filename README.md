@@ -12,6 +12,12 @@ Requires `libwebkit2gtk-4.1` — if it's missing the script will tell you the ex
 
 Or download the AppImage directly from the [Releases](https://github.com/barsazzar/LinuxBrewer/releases) page.
 
+## Uninstall
+
+```bash
+rm -f ~/.local/bin/LinuxBrewer ~/.local/bin/LinuxBrewer.appimage
+```
+
 ## Features
 
 - **Installed packages** — browse all formulas and casks with version info; filter by kind or search by name
