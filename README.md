@@ -1,6 +1,16 @@
-# Brew Manager
+# LinuxBrewer
 
-A desktop GUI for [Homebrew (Linuxbrew)](https://brew.sh/) on Linux and macOS, built with Tauri v2, Vue 3, and TypeScript.
+A desktop GUI for [Homebrew (Linuxbrew)](https://brew.sh/) on Linux, built with Tauri v2, Vue 3, and TypeScript.
+
+## Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/barsazzar/LinuxBrewer/main/install.sh | sh
+```
+
+Requires `libwebkit2gtk-4.1` — if it's missing the script will tell you the exact command to install it for your distro (apt / dnf / pacman).
+
+Or download the AppImage directly from the [Releases](https://github.com/barsazzar/LinuxBrewer/releases) page.
 
 ## Features
 
