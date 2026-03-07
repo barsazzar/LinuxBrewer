@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
 import { getVersion } from "@tauri-apps/api/app"
+import { Beer } from "lucide-vue-next"
 import { t, lang, setLang } from "../../i18n"
 import { showPathSettings, customBrewPath, status, saveBrewPath } from "../../store/brew"
 
@@ -81,10 +82,7 @@ const shortcuts = [
       <template v-else-if="activeTab === 'about'">
         <div class="modal-body about-body">
           <div class="about-icon">
-            <svg viewBox="0 0 24 24" fill="none">
-              <rect x="4" y="6" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
-              <path d="M8 6V4M12 6V4M16 6V4M8 12h8M8 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <Beer :size="48" />
           </div>
           <div class="about-name">Brew Manager</div>
           <div class="about-version">{{ t.aboutVersion }} {{ appVersion }}</div>

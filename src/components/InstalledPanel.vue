@@ -7,6 +7,7 @@ import {
   listSearchRef, sortKey, sortDir, pinnedNames,
   toggleSelection, toggleSort, installPkg, uninstallPkg, showInfo, togglePin,
 } from "../store/brew"
+import { Info, Plus, Pin, Trash2, CircleMinus } from "lucide-vue-next"
 
 const inputEl = ref<HTMLInputElement | null>(null)
 onMounted(() => { listSearchRef.value = inputEl.value })
@@ -22,10 +23,7 @@ const showDesc = ref(false)
       <div class="panel-title-group">
         <h3>{{ t.panelInstalled }} <span class="count">{{ filteredPackages.length }} / {{ packages.length }}</span></h3>
         <button class="icon-btn small" :class="{ active: showDesc }" @click="showDesc = !showDesc">
-          <svg viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-            <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+          <Info :size="14" />
         </button>
       </div>
       <div class="header-controls">
@@ -72,9 +70,7 @@ const showDesc = ref(false)
         <option value="cask">Cask</option>
       </select>
       <button class="btn-primary" :disabled="loading" @click="installPkg()">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+        <Plus :size="14" />
         {{ t.btnInstall }}
       </button>
     </div>
@@ -100,10 +96,7 @@ const showDesc = ref(false)
         </div>
         <div class="pkg-actions">
           <button class="icon-btn" @click="showInfo(pkg)" :title="t.ttInfo">
-            <svg viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-              <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <Info :size="14" />
           </button>
           <button
             class="icon-btn"
@@ -111,26 +104,16 @@ const showDesc = ref(false)
             @click="togglePin(pkg)"
             :title="pinnedNames.has(pkg.name) ? t.ttUnpin : t.ttPin"
           >
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M12 2v6l2 2-2 10-2-10 2-2V2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M7 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <Pin :size="14" />
           </button>
           <button class="icon-btn danger" @click="uninstallPkg(pkg)" :title="t.ttUninstall">
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4h8v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="10" y1="11" x2="10" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="14" y1="11" x2="14" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <Trash2 :size="14" />
           </button>
         </div>
       </div>
 
       <div v-if="filteredPackages.length === 0" class="list-empty">
-        <svg viewBox="0 0 24 24" fill="none" width="32" height="32">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-          <path d="M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+        <CircleMinus :size="32" />
         <p>{{ t.noResults }}</p>
       </div>
     </div>

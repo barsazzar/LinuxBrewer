@@ -6,6 +6,7 @@ import {
   onSearchQueryChange, doSearch, clearSearch,
 } from "../store/brew"
 import { installPkg } from "../store/brew"
+import { Search, Plus } from "lucide-vue-next"
 
 // Type extension for desc field from enrichment
 interface EnrichedPackage {
@@ -19,10 +20,7 @@ interface EnrichedPackage {
 <template>
   <div class="search-panel">
     <div class="search-bar">
-      <svg viewBox="0 0 24 24" fill="none" class="search-icon">
-        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-        <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+      <Search :size="16" class="search-icon" />
       <input
         v-model="searchQuery"
         @input="onSearchQueryChange"
@@ -57,9 +55,7 @@ interface EnrichedPackage {
             :disabled="loading"
             @click="installPkg(pkg.name, pkg.kind)"
           >
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
+            <Plus :size="14" />
             {{ t.btnInstall }}
           </button>
         </div>
