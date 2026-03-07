@@ -6,7 +6,7 @@ import { nextTick } from "vue"
 import { t } from "../i18n"
 import type { ApiResponse, BrewPackage, BrewKind, BrewLogEvent } from "../types"
 import {
-  showGlobalLoading, hideGlobalLoading, showToast, notify, makeRequestId,
+  showGlobalLoading, hideGlobalLoading, notify, makeRequestId,
   setDetailLoading, detailModalOpen, detailTitle, detailText, activeRequestId,
   showConfirm, resolveErrorMessage,
 } from "./ui"
