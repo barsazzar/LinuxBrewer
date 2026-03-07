@@ -20,36 +20,45 @@ rm -f ~/.local/bin/LinuxBrewer ~/.local/bin/LinuxBrewer.appimage
 
 ## Features
 
-- **Installed packages** — browse all formulas and casks with version info; filter by kind or search by name
-- **Upgradable packages** — see what's outdated; upgrade individually or all at once
-- **Search & install** — search the Homebrew registry and install with one click
+- **Installed packages** — browse all formulas and casks with version info; filter by kind, search by name, or sort by name / kind / version
+- **Upgradable packages** — see what's outdated with old → new version diff; upgrade individually or all at once
+- **Package pinning** — pin packages to prevent them from being upgraded
+- **Search & install** — search the Homebrew registry; results include version and description via `brew info`
 - **Taps** — list, add, and remove third-party taps
-- **Real-time output** — long-running commands (install, upgrade, doctor…) stream output line-by-line in a live modal
+- **Real-time output** — long-running commands (install, upgrade, doctor…) stream output line-by-line in a live modal with syntax highlighting
+- **Cancellable operations** — cancel any in-progress command mid-stream
 - **Batch operations** — select multiple packages for bulk uninstall or upgrade
 - **System tray** — minimize to tray with live outdated-package count badge
-- **Brew version & path** — toolbar displays the detected brew version; sidebar shows the resolved binary path with a one-click copy button
+- **Brew version & path** — toolbar displays the detected brew version; settings show the resolved binary path
 - **Panel descriptions** — each panel has an info icon that reveals a brief description of what the panel does
-- **Settings** — tabbed modal with Settings, About, and License tabs; supports custom brew path and language switching
+- **Settings** — tabbed modal: Settings (custom brew path, language), Shortcuts, About, License
 - **Multilingual** — English / 中文, persisted across sessions
-- **Keyboard shortcuts** — `Ctrl+R` refresh · `Ctrl+K` search · `Ctrl+F` filter · `Escape` closes modals
+- **Keyboard shortcuts** — `Ctrl+R` refresh · `Ctrl+K` search · `Ctrl+F` filter · `Ctrl+,` settings · `Escape` closes modals
 
 ## Tech Stack
 
-| Layer    | Tech                                      |
-| -------- | ----------------------------------------- |
-| Shell    | [Tauri v2](https://tauri.app/) (Rust)     |
-| Frontend | Vue 3 `<script setup>` + TypeScript       |
-| Build    | Vite                                      |
-| Styling  | Plain CSS (global, no component scoping)  |
-| State    | Module-level `ref()` singleton (no Pinia) |
-| i18n     | Reactive `computed` translation map       |
+| Layer    | Tech                                        |
+| -------- | ------------------------------------------- |
+| Shell    | [Tauri v2](https://tauri.app/) (Rust)       |
+| Frontend | Vue 3 `<script setup>` + TypeScript         |
+| Build    | Vite                                        |
+| Styling  | Plain CSS (global, no component scoping)    |
+| Icons    | [Lucide](https://lucide.dev/) (lucide-vue-next) |
+| State    | Module-level `ref()` singleton (no Pinia)   |
+| i18n     | Reactive `computed` translation map         |
 
 ## Project Structure
 
 ```
 src/
 ├── i18n/index.ts          # Language definitions (en / zh) + reactive t
-├── store/brew.ts          # All reactive state + business logic
+├── store/
+│   ├── brew.ts            # Re-export hub (single import point for components)
+│   ├── packages.ts        # Installed/outdated packages, install/uninstall/upgrade logic
+│   ├── search.ts          # Search state + doSearch / enrichment
+│   ├── taps.ts            # Taps list + add/remove
+│   ├── settings.ts        # Custom brew path + language settings
+│   └── ui.ts              # UI state (toasts, confirm modal, detail modal)
 ├── types.ts               # Shared TypeScript interfaces
 ├── assets/global.css      # All styles
 ├── App.vue                # Thin layout orchestrator
@@ -69,9 +78,9 @@ src/
 
 src-tauri/src/
 ├── lib.rs       # Entry point + command registration
-├── types.rs     # Rust structs + ok/err helpers
+├── types.rs     # Rust structs + ok/err helpers + BrewState cache
 ├── brew.rs      # Homebrew helpers + sync Tauri commands
-├── stream.rs    # brew_run_stream (async, tokio)
+├── stream.rs    # brew_run_stream (async, tokio) + cancellation registry
 └── tray.rs      # System tray setup + update_tray command
 ```
 
