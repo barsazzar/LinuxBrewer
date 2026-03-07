@@ -3,17 +3,24 @@ import { t } from "../i18n"
 import {
   searchQuery, searchResults, searchLoading, searchError,
   installedNames, loading,
-  onSearchQueryChange, doSearch, installPkg,
+  onSearchQueryChange, doSearch, clearSearch,
 } from "../store/brew"
+import { installPkg } from "../store/brew"
+import { Search, Plus } from "lucide-vue-next"
+
+// Type extension for desc field from enrichment
+interface EnrichedPackage {
+  name: string
+  kind: string
+  version?: string
+  desc?: string
+}
 </script>
 
 <template>
   <div class="search-panel">
     <div class="search-bar">
-      <svg viewBox="0 0 24 24" fill="none" class="search-icon">
-        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-        <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+      <Search :size="16" class="search-icon" />
       <input
         v-model="searchQuery"
         @input="onSearchQueryChange"
@@ -22,7 +29,7 @@ import {
         autofocus
       />
       <div v-if="searchLoading" class="spinner search-spinner"></div>
-      <button v-if="searchQuery" class="clear-btn" @click="searchQuery = ''; searchResults = []; searchError = ''">×</button>
+      <button v-if="searchQuery" class="clear-btn" @click="clearSearch">×</button>
     </div>
 
     <div v-if="searchError" class="search-empty">{{ searchError }}</div>
@@ -33,8 +40,12 @@ import {
         class="search-row"
       >
         <div class="sr-info">
-          <span class="sr-name">{{ pkg.name }}</span>
-          <span class="sr-kind" :class="pkg.kind">{{ pkg.kind }}</span>
+          <div class="sr-name-row">
+            <span class="sr-name">{{ pkg.name }}</span>
+            <span class="sr-kind" :class="pkg.kind">{{ pkg.kind }}</span>
+            <span v-if="(pkg as EnrichedPackage).version" class="sr-version">v{{ (pkg as EnrichedPackage).version }}</span>
+          </div>
+          <div v-if="(pkg as EnrichedPackage).desc" class="sr-desc">{{ (pkg as EnrichedPackage).desc }}</div>
         </div>
         <div class="sr-actions">
           <span v-if="installedNames.has(pkg.name)" class="installed-tag">{{ t.installedTag }}</span>
@@ -44,9 +55,7 @@ import {
             :disabled="loading"
             @click="installPkg(pkg.name, pkg.kind)"
           >
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
+            <Plus :size="14" />
             {{ t.btnInstall }}
           </button>
         </div>
