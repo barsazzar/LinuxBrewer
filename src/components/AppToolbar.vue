@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { t } from "../i18n"
-import { loading, outdated, showSearch, showLogs, showPathSettings, refreshAll, upgradeAll, runDoctor, status } from "../store/brew"
+import { loading, outdated, showSearch, showLogs, showPathSettings, refreshAll, upgradeAll, runDoctor, runUpdate, runCleanup, status } from "../store/brew"
 </script>
 
 <template>
@@ -30,11 +30,22 @@ import { loading, outdated, showSearch, showLogs, showPathSettings, refreshAll, 
           <path d="M21 6v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
+      <button class="tool-btn" :disabled="loading" @click="runUpdate" :title="t.ttUpdate">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 3v4M12 3l-3 3M12 3l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0Z" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </button>
       <button class="tool-btn" :disabled="loading || outdated.length === 0" @click="upgradeAll" :title="t.ttUpgradeAll">
         <svg viewBox="0 0 24 24" fill="none">
           <path d="M12 19V5m0 0-7 7m7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <span v-if="outdated.length" class="badge">{{ outdated.length }}</span>
+      </button>
+      <button class="tool-btn" :disabled="loading" @click="runCleanup" :title="t.ttCleanup">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4h8v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
       </button>
       <button class="tool-btn" :disabled="loading" @click="runDoctor" title="brew doctor">
         <svg viewBox="0 0 24 24" fill="none">

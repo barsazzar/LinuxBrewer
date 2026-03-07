@@ -4,12 +4,20 @@ import { getVersion } from "@tauri-apps/api/app"
 import { t, lang, setLang } from "../../i18n"
 import { showPathSettings, customBrewPath, status, saveBrewPath } from "../../store/brew"
 
-const activeTab = ref<"settings" | "about" | "license">("settings")
+const activeTab = ref<"settings" | "about" | "license" | "shortcuts">("settings")
 const appVersion = ref("0.1.0")
 
 onMounted(async () => {
   try { appVersion.value = await getVersion() } catch { /* keep default */ }
 })
+
+const shortcuts = [
+  { key: "⌘/Ctrl + R", desc: (t: any) => t.shortcutRefresh },
+  { key: "⌘/Ctrl + K", desc: (t: any) => t.shortcutSearch },
+  { key: "⌘/Ctrl + F", desc: (t: any) => t.shortcutFilter },
+  { key: "⌘/Ctrl + ,", desc: (t: any) => t.shortcutSettings },
+  { key: "Escape",      desc: (t: any) => t.shortcutEsc },
+]
 </script>
 
 <template>
@@ -23,6 +31,7 @@ onMounted(async () => {
       <!-- Tab bar -->
       <div class="settings-tabs">
         <button class="settings-tab-btn" :class="{ active: activeTab === 'settings' }" @click="activeTab = 'settings'">{{ t.settingsTabSettings }}</button>
+        <button class="settings-tab-btn" :class="{ active: activeTab === 'shortcuts' }" @click="activeTab = 'shortcuts'">{{ t.settingsTabShortcuts }}</button>
         <button class="settings-tab-btn" :class="{ active: activeTab === 'about' }" @click="activeTab = 'about'">{{ t.settingsTabAbout }}</button>
         <button class="settings-tab-btn" :class="{ active: activeTab === 'license' }" @click="activeTab = 'license'">{{ t.settingsTabLicense }}</button>
       </div>
@@ -51,6 +60,20 @@ onMounted(async () => {
         <div class="modal-footer">
           <button class="btn-secondary" @click="customBrewPath = ''; showPathSettings = false">{{ t.btnClear }}</button>
           <button class="btn-primary" @click="saveBrewPath">{{ t.btnSave }}</button>
+        </div>
+      </template>
+
+      <!-- Shortcuts tab -->
+      <template v-else-if="activeTab === 'shortcuts'">
+        <div class="modal-body">
+          <table class="shortcuts-table">
+            <tbody>
+              <tr v-for="sc in shortcuts" :key="sc.key">
+                <td><kbd>{{ sc.key }}</kbd></td>
+                <td>{{ sc.desc(t) }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </template>
 

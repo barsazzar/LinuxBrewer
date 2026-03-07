@@ -4,8 +4,8 @@ import { t } from "../i18n"
 import {
   packages, filteredPackages, selectedPackages,
   search, filterKind, installName, installKind, loading,
-  listSearchRef,
-  toggleSelection, installPkg, uninstallPkg, showInfo,
+  listSearchRef, sortKey, sortDir, pinnedNames,
+  toggleSelection, toggleSort, installPkg, uninstallPkg, showInfo, togglePin,
 } from "../store/brew"
 
 const inputEl = ref<HTMLInputElement | null>(null)
@@ -46,6 +46,20 @@ const showDesc = ref(false)
     <!-- 面板描述 -->
     <div v-if="showDesc" class="panel-desc">{{ t.descInstalled }}</div>
 
+    <!-- 排序栏 -->
+    <div class="sort-bar">
+      <button
+        v-for="key in (['name', 'kind', 'version'] as const)"
+        :key="key"
+        class="sort-btn"
+        :class="{ active: sortKey === key }"
+        @click="toggleSort(key)"
+      >
+        {{ key === 'name' ? t.sortName : key === 'kind' ? t.sortKind : t.sortVersion }}
+        <span v-if="sortKey === key" class="sort-arrow">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+      </button>
+    </div>
+
     <!-- 快速安装行 -->
     <div class="install-row">
       <input
@@ -71,7 +85,7 @@ const showDesc = ref(false)
         v-for="pkg in filteredPackages"
         :key="`${pkg.kind}-${pkg.name}`"
         class="package-row"
-        :class="{ selected: selectedPackages.has(pkg.name) }"
+        :class="{ selected: selectedPackages.has(pkg.name), pinned: pinnedNames.has(pkg.name) }"
       >
         <div class="pkg-check">
           <input type="checkbox" :checked="selectedPackages.has(pkg.name)" @change="toggleSelection(pkg.name)" />
@@ -81,6 +95,7 @@ const showDesc = ref(false)
           <div class="pkg-meta">
             <span class="pkg-kind" :class="pkg.kind">{{ pkg.kind }}</span>
             <span v-if="pkg.version" class="pkg-version">{{ pkg.version }}</span>
+            <span v-if="pinnedNames.has(pkg.name)" class="pin-badge">📌</span>
           </div>
         </div>
         <div class="pkg-actions">
@@ -88,6 +103,17 @@ const showDesc = ref(false)
             <svg viewBox="0 0 24 24" fill="none">
               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
               <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button
+            class="icon-btn"
+            :class="{ active: pinnedNames.has(pkg.name) }"
+            @click="togglePin(pkg)"
+            :title="pinnedNames.has(pkg.name) ? t.ttUnpin : t.ttPin"
+          >
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 2v6l2 2-2 10-2-10 2-2V2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </button>
           <button class="icon-btn danger" @click="uninstallPkg(pkg)" :title="t.ttUninstall">

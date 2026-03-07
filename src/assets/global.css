@@ -541,3 +541,86 @@
 .batch-actions { display: flex; gap: 12px; }
 .btn-text { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 13px; font-weight: 500; }
 .btn-text:hover { color: white; }
+
+/* ── 排序栏 ──────────────────────────────────────────────────────────────────── */
+.sort-bar {
+  display: flex; gap: 2px; padding: 5px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0; background: #fafbfc;
+}
+.sort-btn {
+  padding: 3px 10px;
+  background: none; border: 1px solid transparent; border-radius: 4px;
+  font-size: 12px; color: #64748b; cursor: pointer;
+  transition: all 0.12s; display: flex; align-items: center; gap: 4px;
+}
+.sort-btn:hover { background: #f1f5f9; color: #0f172a; }
+.sort-btn.active { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+.sort-arrow { font-size: 11px; }
+
+/* ── Pin badges ──────────────────────────────────────────────────────────────── */
+.pin-badge { font-size: 12px; }
+.package-row.pinned { background: #fffbeb; }
+.package-row.pinned:hover { background: #fef3c7; }
+
+/* ── 版本差异 (Upgradable Panel) ─────────────────────────────────────────────── */
+.up-version-diff {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; margin-left: 4px;
+}
+.ver-old { color: #ef4444; text-decoration: line-through; }
+.ver-arrow { color: #94a3b8; }
+.ver-new { color: #16a34a; font-weight: 600; }
+
+/* Upgradable row checkbox */
+.pkg-check-small { margin-right: 8px; display: flex; align-items: center; }
+.pkg-check-small input { width: 14px; height: 14px; cursor: pointer; accent-color: #3b82f6; }
+.upgrade-row.selected { background: #eff6ff; }
+
+/* ── 输出语法高亮 ─────────────────────────────────────────────────────────────── */
+.modal-output .out-error { color: #f87171; }
+.modal-output .out-warn  { color: #fbbf24; }
+.modal-output .out-ok    { color: #4ade80; }
+
+/* ── 模态框头部操作组 ────────────────────────────────────────────────────────── */
+.modal-header-actions { display: flex; align-items: center; gap: 8px; }
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 12px; font-weight: 500; cursor: pointer;
+  border-radius: 5px; border: 1px solid #e2e8f0;
+  background: white; color: #374151;
+  transition: all 0.12s;
+}
+.btn-sm:hover { background: #f1f5f9; color: #dc2626; border-color: #fca5a5; }
+
+/* ── 日志抽屉操作按钮 ────────────────────────────────────────────────────────── */
+.drawer-actions { display: flex; align-items: center; gap: 4px; }
+
+/* ── 快捷键表格 ──────────────────────────────────────────────────────────────── */
+.shortcuts-table {
+  width: 100%; border-collapse: collapse;
+}
+.shortcuts-table td {
+  padding: 9px 12px; border-bottom: 1px solid #f1f5f9;
+  font-size: 13px; color: #374151;
+}
+.shortcuts-table tr:last-child td { border-bottom: none; }
+.shortcuts-table td:first-child { width: 160px; }
+kbd {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: 'SF Mono', Consolas, monospace;
+  font-size: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  color: #374151;
+  white-space: nowrap;
+}
+
+/* ── 搜索结果描述 ────────────────────────────────────────────────────────────── */
+.sr-name-row { display: flex; align-items: center; gap: 8px; }
+.sr-version { font-size: 11px; color: #94a3b8; }
+.sr-desc { font-size: 12px; color: #64748b; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 340px; }
+.sr-info { flex-direction: column; align-items: flex-start; }

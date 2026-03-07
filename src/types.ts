@@ -15,7 +15,10 @@ export interface BrewStatus {
 export interface BrewPackage {
   name: string
   version?: string
+  newVersion?: string
   kind: BrewKind
+  pinned?: boolean
+  description?: string
 }
 
 export interface BrewLogEvent {
