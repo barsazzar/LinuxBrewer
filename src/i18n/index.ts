@@ -144,6 +144,63 @@ const en = {
   errSpawnFailed: "Failed to start brew process.",
   errIoPipeFailed: "Failed to read brew output.",
   errWaitFailed: "Failed to wait for brew process.",
+  // NVM / FNM
+  tabHomebrew: "Homebrew", tabNode: "Node.js",
+  nvmNotFound: "No Node version manager detected",
+  nvmNotFoundHint: "Install fnm (recommended) or nvm to manage Node.js versions.",
+  nvmManager: (kind: string, ver: string) => `${kind} ${ver}`,
+  nvmDefault: (ver: string) => `default: ${ver}`,
+  nvmNoDefault: "no default set",
+  nvmInstalled: "installed",
+  nvmCurrent: "current",
+  nvmNotInstalled: "not installed",
+  nvmInstalling: (ver: string) => `Installing Node.js ${ver}...`,
+  nvmInstallTitle: (ver: string) => `Install Node.js ${ver}`,
+  nvmInstallDone: (ver: string) => `Node.js ${ver} installed`,
+  nvmUninstalling: (ver: string) => `Uninstalling Node.js ${ver}...`,
+  nvmUninstallTitle: (ver: string) => `Uninstall Node.js ${ver}`,
+  nvmUninstallDone: (ver: string) => `Node.js ${ver} removed`,
+  nvmSetDefault: "Set Default",
+  nvmSetDefaultDone: (ver: string) => `Default set to ${ver}`,
+  nvmProjectTitle: "Project .nvmrc",
+  nvmProjectDirPlaceholder: "Project directory path",
+  nvmProjectLoad: "Load",
+  nvmProjectCurrent: (ver: string) => `Current: ${ver}`,
+  nvmProjectNone: "No .nvmrc found",
+  nvmProjectVersionPlaceholder: "Version, e.g: 20 or v20.11.1",
+  nvmProjectSave: "Save .nvmrc",
+  nvmProjectSaved: ".nvmrc saved",
+  nvmRefresh: "Refresh",
+  nvmEol: "EOL",
+  nvmRedetect: "Re-detect fnm/nvm installation path",
+  nvmRefreshAndCheck: "Refresh & check for updates",
+  nvmConfirmUninstallTitle: "Confirm Uninstall",
+  nvmConfirmUninstall: (ver: string) => `Uninstall Node.js ${ver}?\nThis cannot be undone.`,
+  nvmCopyPath: "Copy binary path",
+  nvmPathCopied: (ver: string) => `Path for ${ver} copied`,
+  nvmWhichFailed: "Could not find binary path",
+  nvmPickFolder: "Browse…",
+  // F1
+  nvmCustomVersionPlaceholder: "specific version (optional)",
+  // F2
+  nvmSystemNode: (ver: string) => `system: ${ver}`,
+  nvmNoSystemNode: "no system node",
+  // F3
+  nvmUpdateAvailable: (latest: string) => `→ ${latest}`,
+  nvmUpToDate: "up to date",
+  // E1
+  nvmMoreVersions: (n: number) => `+${n} more`,
+  nvmCollapseVersions: "less",
+  // E3
+  nvmFileLabel: (file: string) => `File: ${file}`,
+  // S1
+  nvmSetAsDefault: "Set as default after install",
+  // S2
+  nvmInstalledCount: (n: number) => `${n} installed`,
+  // F1 installed-card
+  nvmInstallOther: "Install other version",
+  nvmSelectVersion: "Select version",
+  nvmLoadingVersions: "Loading versions…",
 }
 
 const zh: typeof en = {
@@ -285,6 +342,63 @@ const zh: typeof en = {
   errSpawnFailed: "启动 brew 进程失败。",
   errIoPipeFailed: "读取 brew 输出失败。",
   errWaitFailed: "等待 brew 进程失败。",
+  // NVM / FNM
+  tabHomebrew: "Homebrew", tabNode: "Node.js",
+  nvmNotFound: "未检测到 Node 版本管理器",
+  nvmNotFoundHint: "请安装 fnm（推荐）或 nvm 来管理 Node.js 版本。",
+  nvmManager: (kind: string, ver: string) => `${kind} ${ver}`,
+  nvmDefault: (ver: string) => `默认: ${ver}`,
+  nvmNoDefault: "未设置默认版本",
+  nvmInstalled: "已安装",
+  nvmCurrent: "当前",
+  nvmNotInstalled: "未安装",
+  nvmInstalling: (ver: string) => `正在安装 Node.js ${ver}...`,
+  nvmInstallTitle: (ver: string) => `安装 Node.js ${ver}`,
+  nvmInstallDone: (ver: string) => `Node.js ${ver} 安装完成`,
+  nvmUninstalling: (ver: string) => `正在卸载 Node.js ${ver}...`,
+  nvmUninstallTitle: (ver: string) => `卸载 Node.js ${ver}`,
+  nvmUninstallDone: (ver: string) => `Node.js ${ver} 已移除`,
+  nvmSetDefault: "设为默认",
+  nvmSetDefaultDone: (ver: string) => `已将默认版本设为 ${ver}`,
+  nvmProjectTitle: "项目 .nvmrc",
+  nvmProjectDirPlaceholder: "项目目录路径",
+  nvmProjectLoad: "加载",
+  nvmProjectCurrent: (ver: string) => `当前: ${ver}`,
+  nvmProjectNone: "未找到 .nvmrc 文件",
+  nvmProjectVersionPlaceholder: "版本号，例如: 20 或 v20.11.1",
+  nvmProjectSave: "保存 .nvmrc",
+  nvmProjectSaved: ".nvmrc 已保存",
+  nvmRefresh: "刷新",
+  nvmEol: "已停止维护",
+  nvmRedetect: "重新检测 fnm/nvm 安装路径",
+  nvmRefreshAndCheck: "刷新并检查更新",
+  nvmConfirmUninstallTitle: "确认卸载",
+  nvmConfirmUninstall: (ver: string) => `确定要卸载 Node.js ${ver} 吗？\n此操作无法撤销。`,
+  nvmCopyPath: "复制二进制路径",
+  nvmPathCopied: (ver: string) => `${ver} 的路径已复制`,
+  nvmWhichFailed: "无法获取二进制路径",
+  nvmPickFolder: "浏览…",
+  // F1
+  nvmCustomVersionPlaceholder: "指定版本（可选）",
+  // F2
+  nvmSystemNode: (ver: string) => `系统: ${ver}`,
+  nvmNoSystemNode: "无系统 node",
+  // F3
+  nvmUpdateAvailable: (latest: string) => `→ ${latest}`,
+  nvmUpToDate: "已是最新",
+  // E1
+  nvmMoreVersions: (n: number) => `+${n} 个`,
+  nvmCollapseVersions: "收起",
+  // E3
+  nvmFileLabel: (file: string) => `文件: ${file}`,
+  // S1
+  nvmSetAsDefault: "安装后设为默认",
+  // S2
+  nvmInstalledCount: (n: number) => `已安装 ${n} 个`,
+  // F1 installed-card
+  nvmInstallOther: "安装其他版本",
+  nvmSelectVersion: "选择版本",
+  nvmLoadingVersions: "加载版本列表…",
 }
 
 const i18n = { en, zh }

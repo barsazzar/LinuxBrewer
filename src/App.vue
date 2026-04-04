@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from "vue"
+import { ref, onMounted, onUnmounted } from "vue"
 import { t } from "./i18n"
 import {
   initialLoading, status, showSearch, showLogs,
@@ -13,10 +13,13 @@ import UpgradablePanel from "./components/UpgradablePanel.vue"
 import TapsPanel from "./components/TapsPanel.vue"
 import LogsDrawer from "./components/LogsDrawer.vue"
 import BatchBar from "./components/BatchBar.vue"
+import NvmPanel from "./components/NvmPanel.vue"
 import ConfirmModal from "./components/modals/ConfirmModal.vue"
 import DetailModal from "./components/modals/DetailModal.vue"
 import AddTapModal from "./components/modals/AddTapModal.vue"
 import SettingsModal from "./components/modals/SettingsModal.vue"
+
+const activeTab = ref<"homebrew" | "node">("homebrew")
 
 onMounted(initApp)
 onUnmounted(cleanupApp)
@@ -40,9 +43,24 @@ function copyPath(path: string) {
   <main v-else class="app">
     <AppToolbar />
 
-    <SearchPanel v-if="showSearch" />
+    <!-- Tab bar -->
+    <div class="app-tabs">
+      <button
+        class="app-tab"
+        :class="{ 'app-tab--active': activeTab === 'homebrew' }"
+        @click="activeTab = 'homebrew'"
+      >{{ t.tabHomebrew }}</button>
+      <button
+        class="app-tab"
+        :class="{ 'app-tab--active': activeTab === 'node' }"
+        @click="activeTab = 'node'"
+      >{{ t.tabNode }}</button>
+    </div>
 
-    <div class="workspace">
+    <SearchPanel v-if="showSearch && activeTab === 'homebrew'" />
+
+    <!-- Homebrew tab -->
+    <div v-show="activeTab === 'homebrew'" class="workspace">
       <div class="main-area">
         <InstalledPanel />
       </div>
@@ -66,6 +84,11 @@ function copyPath(path: string) {
           </div>
         </div>
       </aside>
+    </div>
+
+    <!-- Node.js tab -->
+    <div v-show="activeTab === 'node'" class="nvm-tab-content">
+      <NvmPanel />
     </div>
 
     <LogsDrawer v-if="showLogs" />
