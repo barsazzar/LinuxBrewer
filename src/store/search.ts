@@ -15,32 +15,38 @@ const MAX_DISPLAY = 50
 
 let searchTimer: ReturnType<typeof setTimeout> | null = null
 
+// Monotonically increasing token: when a response arrives for an older token,
+// it means a newer search is already in flight — discard the stale result.
+let searchToken = 0
+
 export function onSearchQueryChange() {
   searchError.value = ""
   searchResults.value = []
   if (!searchQuery.value.trim()) return
   if (searchTimer) clearTimeout(searchTimer)
-  searchTimer = setTimeout(doSearch, 600)
+  searchTimer = setTimeout(doSearch, 350)
 }
 
 export async function doSearch() {
   if (!searchQuery.value.trim()) return
+  const token = ++searchToken
   searchLoading.value = true
   searchError.value = ""
   try {
     const res = (await invoke("brew_search", { query: searchQuery.value })) as ApiResponse<BrewPackage[]>
+    // Discard if a newer search has already started
+    if (token !== searchToken) return
     if (res.ok && res.data) {
-      // Rust already provides version + description for the first 30 results.
-      // Slice to MAX_DISPLAY to avoid rendering hundreds of DOM nodes at once.
       searchResults.value = res.data.slice(0, MAX_DISPLAY)
     } else {
       searchError.value = t.value.searchFailed(res.message)
       searchResults.value = []
     }
   } catch (e) {
+    if (token !== searchToken) return
     searchError.value = t.value.searchFailed(String(e))
   } finally {
-    searchLoading.value = false
+    if (token === searchToken) searchLoading.value = false
   }
 }
 
@@ -49,8 +55,10 @@ export function clearSearch() {
   searchResults.value = []
   searchError.value = ""
   if (searchTimer) clearTimeout(searchTimer)
+  searchToken++ // invalidate any in-flight request
 }
 
 export function cleanupSearch() {
   if (searchTimer) clearTimeout(searchTimer)
+  searchToken++
 }

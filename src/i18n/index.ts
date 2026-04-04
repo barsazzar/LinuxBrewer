@@ -139,6 +139,11 @@ const en = {
   cmdNoOutput: "Command finished, no output",
   cmdDone: "Command complete",
   cmdDoneWarning: "Command complete (with warnings)",
+  btnCopyOutput: "Copy output",
+  batchCancelled: "\n⊘ Batch cancelled\n",
+  errSpawnFailed: "Failed to start brew process.",
+  errIoPipeFailed: "Failed to read brew output.",
+  errWaitFailed: "Failed to wait for brew process.",
 }
 
 const zh: typeof en = {
@@ -275,6 +280,11 @@ const zh: typeof en = {
   cmdNoOutput: "命令执行结束，无输出",
   cmdDone: "命令完成",
   cmdDoneWarning: "命令完成（有告警）",
+  btnCopyOutput: "复制输出",
+  batchCancelled: "\n⊘ 批量操作已取消\n",
+  errSpawnFailed: "启动 brew 进程失败。",
+  errIoPipeFailed: "读取 brew 输出失败。",
+  errWaitFailed: "等待 brew 进程失败。",
 }
 
 const i18n = { en, zh }

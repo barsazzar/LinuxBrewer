@@ -103,12 +103,15 @@
   border-bottom: 1px solid #f8fafc;
 }
 .search-row:hover { background: #f8fafc; }
-.sr-info { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.sr-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.sr-name-row { display: flex; align-items: center; gap: 6px; }
 .sr-name { font-size: 13px; font-weight: 500; }
 .sr-kind { font-size: 11px; padding: 1px 6px; border-radius: 3px; font-weight: 500; }
 .sr-kind.formula { background: #eff6ff; color: #3b82f6; }
 .sr-kind.cask    { background: #f0fdf4; color: #16a34a; }
-.sr-actions { display: flex; align-items: center; gap: 8px; }
+.sr-version { font-size: 11px; color: #94a3b8; }
+.sr-desc { font-size: 11px; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sr-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .installed-tag { font-size: 11px; color: #94a3b8; padding: 3px 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; }
 .btn-install {
   display: flex; align-items: center; gap: 4px;
@@ -419,6 +422,24 @@
   background: #0f172a; color: #94a3b8;
   font-family: 'SF Mono', Consolas, monospace; font-size: 12px; line-height: 1.6;
   margin: 0; border-radius: 0 0 8px 8px;
+  user-select: text;
+}
+
+/* ── Batch progress bar ──────────────────────────────────────────────────────── */
+.modal-progress {
+  padding: 8px 18px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+.modal-progress-label {
+  font-size: 11px; color: #94a3b8; margin-bottom: 5px;
+}
+.modal-progress-bar {
+  height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden;
+}
+.modal-progress-fill {
+  height: 100%; background: #3b82f6; border-radius: 2px;
+  transition: width 0.25s ease;
 }
 
 /* ── 设置 Tabs ───────────────────────────────────────────────────────────────── */
