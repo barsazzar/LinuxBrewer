@@ -6,12 +6,14 @@ export * from "./packages"
 export * from "./taps"
 export * from "./search"
 export * from "./settings"
+export * from "./nvm"
 
 // ── App lifecycle ─────────────────────────────────────────────────────────────
 import { nextTick } from "vue"
 import { customBrewPath } from "./settings"
 import { showSearch } from "./search"
 import { showLogs, listSearchRef, loading, refreshAll, initialLoading, initBrewLog, cleanupBrewLog } from "./packages"
+import { refreshNvm } from "./nvm"
 import { showPathSettings } from "./settings"
 import { showAddTapModal } from "./taps"
 import { confirmVisible, handleConfirm, detailModalOpen, closeDetailModal } from "./ui"
@@ -31,7 +33,8 @@ export async function initApp() {
   window.addEventListener("keydown", onKeyDown)
 
   await nextTick()
-  await refreshAll()
+  // brew 和 nvm 并行加载，互不阻塞
+  await Promise.all([refreshAll(), refreshNvm()])
   initialLoading.value = false
 
   await initBrewLog()

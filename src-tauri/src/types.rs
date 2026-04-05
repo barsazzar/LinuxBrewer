@@ -55,6 +55,78 @@ pub fn err<T>(code: &str, message: &str) -> ApiResponse<T> {
     }
 }
 
+// ── NVM / FNM types ───────────────────────────────────────────────────────────
+
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct NvmManagerInfo {
+    pub kind: String, // "fnm" | "nvm"
+    pub path: String,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NvmStatus {
+    pub manager: String, // "fnm" | "nvm" | "none"
+    pub manager_version: Option<String>,
+    pub node_default: Option<String>,
+}
+
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct NodeVersion {
+    pub version: String,
+    pub major: u32,
+    pub is_current: bool,
+    pub is_default: bool,
+    pub lts_name: Option<String>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LtsSlot {
+    pub major: u32,
+    pub lts_name: String,
+    pub installed: Option<NodeVersion>,
+    pub all_installed: Vec<NodeVersion>,    // E1: 该 major 下所有已装版本
+    pub latest_available: Option<String>,  // F3: nodejs.org 最新版（lazy fetch）
+    pub is_lts: bool,                      // E2: false = 非 LTS 的额外 slot
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ProjectVersion {
+    pub version: String,
+    pub file: String,
+}
+
+pub struct NvmState {
+    pub cached: Mutex<Option<NvmManagerInfo>>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NvmRefreshResult {
+    pub status: NvmStatus,
+    pub slots: Vec<LtsSlot>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RemoteLtsVersion {
+    pub major: u32,
+    pub latest: String,
+    pub lts_name: Option<String>,
+}
+
+impl NvmState {
+    pub fn new() -> Self {
+        NvmState { cached: Mutex::new(None) }
+    }
+}
+
+// ── Brew state ────────────────────────────────────────────────────────────────
+
 /// App-wide state: caches the detected brew path and custom path override.
 pub struct BrewState {
     /// User-configured custom path (set from settings UI)

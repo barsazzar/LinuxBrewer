@@ -8,7 +8,7 @@ import type { ApiResponse, BrewPackage, BrewKind, BrewLogEvent } from "../types"
 import {
   showGlobalLoading, hideGlobalLoading, notify, makeRequestId,
   setDetailLoading, detailModalOpen, detailTitle, detailText, activeRequestId,
-  showConfirm, resolveErrorMessage,
+  showConfirm, resolveErrorMessage, batchProgress,
 } from "./ui"
 
 export type SortKey = "name" | "kind" | "version"
@@ -33,6 +33,9 @@ export const showLogs = ref(false)
 export const logs = ref<string[]>([])
 
 export const listSearchRef = ref<HTMLInputElement | null>(null)
+
+// Whether a batch operation should stop after the current item
+export const batchCancelRequested = ref(false)
 
 export const installedNames = computed(() => new Set(packages.value.map(p => p.name)))
 
@@ -81,6 +84,15 @@ function waitFrames(n = 2): Promise<void> {
     const tick = () => { if (++count >= n) resolve(); else requestAnimationFrame(tick) }
     requestAnimationFrame(tick)
   })
+}
+
+// Scroll the modal output to bottom only if the user is already near the bottom.
+// This lets the user scroll up to read earlier lines without being yanked back.
+function scrollModalIfAtBottom() {
+  const el = document.querySelector(".modal-output")
+  if (!el) return
+  const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight
+  if (distanceFromBottom < 80) el.scrollTop = el.scrollHeight
 }
 
 // ── Stream operations helper ──────────────────────────────────────────────────
@@ -254,16 +266,26 @@ export async function batchUninstall() {
   detailModalOpen.value = true
   await nextTick()
 
+  // O(1) lookup map instead of O(n) find per item
+  const pkgMap = new Map(packages.value.map(p => [p.name, p]))
+  batchCancelRequested.value = false
+  batchProgress.value = { current: 0, total: targets.length }
+
   let successCount = 0
   try {
     for (let i = 0; i < targets.length; i++) {
+      if (batchCancelRequested.value) {
+        detailText.value += t.value.batchCancelled
+        break
+      }
+
       const name = targets[i]
-      const pkg = packages.value.find(p => p.name === name)
+      const pkg = pkgMap.get(name)
       if (!pkg) continue
 
+      batchProgress.value = { current: i + 1, total: targets.length }
       detailText.value += t.value.logBatchUninstalling(i + 1, targets.length, name)
-      const el = document.querySelector(".modal-output")
-      if (el) el.scrollTop = el.scrollHeight
+      scrollModalIfAtBottom()
 
       const res = (await invoke("brew_run_stream", {
         requestId, action: "uninstall", name, kind: pkg.kind,
@@ -278,6 +300,9 @@ export async function batchUninstall() {
   } catch (e) {
     setDetailLoading(false)
     detailText.value += t.value.logInterrupted(String(e))
+  } finally {
+    batchProgress.value = { current: 0, total: 0 }
+    batchCancelRequested.value = false
   }
 }
 
@@ -300,14 +325,26 @@ export async function batchUpgrade() {
   detailModalOpen.value = true
   await nextTick()
 
+  // O(1) lookup map instead of O(n) find per item
+  const pkgMap = new Map(outdated.value.map(p => [p.name, p]))
+  batchCancelRequested.value = false
+  batchProgress.value = { current: 0, total: targets.length }
+
   let successCount = 0
   try {
     for (let i = 0; i < targets.length; i++) {
+      if (batchCancelRequested.value) {
+        detailText.value += t.value.batchCancelled
+        break
+      }
+
       const name = targets[i]
-      const pkg = packages.value.find(p => p.name === name)
+      const pkg = pkgMap.get(name)
       if (!pkg) continue
 
+      batchProgress.value = { current: i + 1, total: targets.length }
       detailText.value += t.value.logBatchUpgrading(i + 1, targets.length, name)
+
       const res = (await invoke("brew_run_stream", {
         requestId, action: "upgrade", name, kind: pkg.kind,
       })) as ApiResponse<boolean>
@@ -321,6 +358,9 @@ export async function batchUpgrade() {
   } catch (e) {
     setDetailLoading(false)
     detailText.value += t.value.logInterrupted(String(e))
+  } finally {
+    batchProgress.value = { current: 0, total: 0 }
+    batchCancelRequested.value = false
   }
 }
 
@@ -336,11 +376,12 @@ export async function refreshAll(showLoader = false) {
     selectedPackages.value.clear()
     const { status } = await import("./settings")
 
-    const [s, listRes, outRes, tapRes] = await Promise.all([
+    const [s, listRes, outRes, tapRes, pinnedRes] = await Promise.all([
       invoke("brew_status") as Promise<ApiResponse<{ brewPath: string; version: string }>>,
       invoke("brew_list_installed") as Promise<ApiResponse<BrewPackage[]>>,
       invoke("brew_outdated") as Promise<ApiResponse<BrewPackage[]>>,
       invoke("brew_tap_list") as Promise<ApiResponse<string[]>>,
+      invoke("brew_list_pinned") as Promise<ApiResponse<string[]>>,
     ])
     status.value = s
 
@@ -359,6 +400,11 @@ export async function refreshAll(showLoader = false) {
         title: count > 0 ? `Brew Manager (${count})` : "Brew Manager",
         count,
       }).catch(() => {})
+    }
+
+    // Sync pinned state from brew backend so it persists across restarts
+    if (pinnedRes.ok && pinnedRes.data) {
+      pinnedNames.value = new Set(pinnedRes.data)
     }
 
     const { taps } = await import("./taps")
@@ -383,9 +429,8 @@ export async function initBrewLog() {
     if (p.stage === "line") {
       const prefix = p.stream === "stderr" ? "[err] " : ""
       detailText.value += `${prefix}${p.line ?? ""}\n`
-      // Auto-scroll modal output
-      const el = document.querySelector(".modal-output")
-      if (el) { el.scrollTop = el.scrollHeight }
+      // Only auto-scroll if user hasn't scrolled up to read earlier output
+      scrollModalIfAtBottom()
       return
     }
     if (p.stage === "end") {

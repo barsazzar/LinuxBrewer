@@ -119,12 +119,18 @@ pub async fn brew_run_stream(
         },
     );
 
-    let mut child = match tokio::process::Command::new(&brew)
-        .args(args.iter().map(String::as_str))
+    // Suppress brew's automatic background `brew update` for every command.
+    // The dedicated "update" action is the only intentional index refresh;
+    // all other commands should use the cached formula index.
+    let mut cmd = tokio::process::Command::new(&brew);
+    cmd.args(args.iter().map(String::as_str))
         .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-    {
+        .stderr(Stdio::piped());
+    if action != "update" {
+        cmd.env("HOMEBREW_NO_AUTO_UPDATE", "1");
+    }
+
+    let mut child = match cmd.spawn() {
         Ok(c) => c,
         Err(e) => {
             cleanup_registry(&registry, &request_id);

@@ -17,6 +17,9 @@ export const detailModalOpen = ref(false)
 export const detailLoading = ref(false)
 export const activeRequestId = ref("")
 
+// Batch operation progress: { current: 0, total: 0 } means not in batch mode
+export const batchProgress = ref({ current: 0, total: 0 })
+
 const MIN_LOADING_VISIBLE_MS = 500
 const detailLoadingStartedAt = ref(0)
 
@@ -92,6 +95,11 @@ const ERROR_CODE_KEYS: Record<string, (t: any) => string> = {
   COMMAND_FAILED: (t) => t.cmdDoneWarning,
   CANCELLED: (t) => t.opCancelled,
   NO_RESULTS: (t) => t.searchNoResults,
+  SPAWN_FAILED: (t) => t.errSpawnFailed,
+  STDOUT_PIPE_FAILED: (t) => t.errIoPipeFailed,
+  STDERR_PIPE_FAILED: (t) => t.errIoPipeFailed,
+  WAIT_FAILED: (t) => t.errWaitFailed,
+  PATH_RESOLVE_FAILED: (t) => t.errBrewNotFound,
 }
 
 export function resolveErrorMessage(code: string | null | undefined, fallback: string): string {

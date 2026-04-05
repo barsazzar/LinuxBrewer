@@ -57,9 +57,13 @@ pub(crate) fn is_valid_pkg_name(name: &str) -> bool {
             .all(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '/' | '+' | '.' | '-' | '@' | '_'))
 }
 
+/// Run a brew command and return its stdout.
+/// Always sets HOMEBREW_NO_AUTO_UPDATE=1 to prevent brew from silently
+/// fetching Git updates mid-command and freezing the UI with no feedback.
 pub(crate) fn brew_output(brew: &str, args: &[&str]) -> Result<String, String> {
     let out = Command::new(brew)
         .args(args)
+        .env("HOMEBREW_NO_AUTO_UPDATE", "1")
         .output()
         .map_err(|e| format!("failed to execute brew: {e}"))?;
 
@@ -219,6 +223,24 @@ pub fn brew_outdated(state: tauri::State<BrewState>) -> ApiResponse<Vec<BrewPack
 }
 
 #[tauri::command]
+pub fn brew_list_pinned(state: tauri::State<BrewState>) -> ApiResponse<Vec<String>> {
+    let Some(brew) = resolve_brew(&state) else {
+        return err("BREW_NOT_FOUND", "BREW_NOT_FOUND");
+    };
+    match brew_output(&brew, &["list", "--pinned"]) {
+        Ok(stdout) => {
+            let names: Vec<String> = stdout
+                .lines()
+                .map(|l| l.trim().to_string())
+                .filter(|l| !l.is_empty())
+                .collect();
+            ok(names, "OK")
+        }
+        Err(e) => err("BREW_LIST_PINNED_FAILED", &e),
+    }
+}
+
+#[tauri::command]
 pub fn brew_search(state: tauri::State<BrewState>, query: String) -> ApiResponse<Vec<BrewPackage>> {
     if query.trim().is_empty() {
         return err("EMPTY_QUERY", "EMPTY_QUERY");
@@ -299,73 +321,5 @@ pub fn brew_tap_list(state: tauri::State<BrewState>) -> ApiResponse<Vec<String>>
             ok(taps, "OK")
         }
         Err(stderr) => err("TAP_LIST_FAILED", &stderr),
-    }
-}
-
-// ── Unused legacy commands (kept for compatibility) ───────────────────────────
-
-#[tauri::command]
-pub fn brew_install(state: tauri::State<BrewState>, name: String, kind: String) -> ApiResponse<String> {
-    if !is_valid_pkg_name(&name) { return err("INVALID_NAME", "INVALID_NAME"); }
-    if kind != "formula" && kind != "cask" { return err("INVALID_KIND", "INVALID_KIND"); }
-    let Some(brew) = resolve_brew(&state) else { return err("BREW_NOT_FOUND", "BREW_NOT_FOUND"); };
-    let args = if kind == "cask" { vec!["install", "--cask", name.as_str()] } else { vec!["install", name.as_str()] };
-    match brew_output(&brew, &args) {
-        Ok(stdout) => ok(stdout, "OK"),
-        Err(stderr) => err("INSTALL_FAILED", &stderr),
-    }
-}
-
-#[tauri::command]
-pub fn brew_uninstall(state: tauri::State<BrewState>, name: String, kind: String) -> ApiResponse<String> {
-    if !is_valid_pkg_name(&name) { return err("INVALID_NAME", "INVALID_NAME"); }
-    if kind != "formula" && kind != "cask" { return err("INVALID_KIND", "INVALID_KIND"); }
-    let Some(brew) = resolve_brew(&state) else { return err("BREW_NOT_FOUND", "BREW_NOT_FOUND"); };
-    let args = if kind == "cask" { vec!["uninstall", "--cask", name.as_str()] } else { vec!["uninstall", name.as_str()] };
-    match brew_output(&brew, &args) {
-        Ok(stdout) => ok(stdout, "OK"),
-        Err(stderr) => err("UNINSTALL_FAILED", &stderr),
-    }
-}
-
-#[tauri::command]
-pub fn brew_upgrade_all(state: tauri::State<BrewState>) -> ApiResponse<String> {
-    let Some(brew) = resolve_brew(&state) else { return err("BREW_NOT_FOUND", "BREW_NOT_FOUND"); };
-    match brew_output(&brew, &["upgrade"]) {
-        Ok(stdout) => ok(stdout, "OK"),
-        Err(stderr) => err("UPGRADE_ALL_FAILED", &stderr),
-    }
-}
-
-#[tauri::command]
-pub fn brew_upgrade_single(state: tauri::State<BrewState>, name: String, kind: String) -> ApiResponse<String> {
-    if !is_valid_pkg_name(&name) { return err("INVALID_NAME", "INVALID_NAME"); }
-    if kind != "formula" && kind != "cask" { return err("INVALID_KIND", "INVALID_KIND"); }
-    let Some(brew) = resolve_brew(&state) else { return err("BREW_NOT_FOUND", "BREW_NOT_FOUND"); };
-    let args = if kind == "cask" { vec!["upgrade", "--cask", name.as_str()] } else { vec!["upgrade", name.as_str()] };
-    match brew_output(&brew, &args) {
-        Ok(stdout) => ok(stdout, "OK"),
-        Err(stderr) => err("UPGRADE_FAILED", &stderr),
-    }
-}
-
-#[tauri::command]
-pub fn brew_info(state: tauri::State<BrewState>, name: String, kind: String) -> ApiResponse<String> {
-    if !is_valid_pkg_name(&name) { return err("INVALID_NAME", "INVALID_NAME"); }
-    if kind != "formula" && kind != "cask" { return err("INVALID_KIND", "INVALID_KIND"); }
-    let Some(brew) = resolve_brew(&state) else { return err("BREW_NOT_FOUND", "BREW_NOT_FOUND"); };
-    let args = if kind == "cask" { vec!["info", "--cask", name.as_str()] } else { vec!["info", name.as_str()] };
-    match brew_output(&brew, &args) {
-        Ok(stdout) => ok(stdout, "OK"),
-        Err(stderr) => err("INFO_FAILED", &stderr),
-    }
-}
-
-#[tauri::command]
-pub fn brew_doctor(state: tauri::State<BrewState>) -> ApiResponse<String> {
-    let Some(brew) = resolve_brew(&state) else { return err("BREW_NOT_FOUND", "BREW_NOT_FOUND"); };
-    match brew_output(&brew, &["doctor"]) {
-        Ok(stdout) => ok(stdout, "OK"),
-        Err(stderr) => err("DOCTOR_FAILED", &stderr),
     }
 }
