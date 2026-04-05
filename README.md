@@ -1,6 +1,6 @@
 # LinuxBrewer
 
-A desktop GUI for [Homebrew (Linuxbrew)](https://brew.sh/) on Linux, built with Tauri v2, Vue 3, and TypeScript.
+A desktop GUI for [Homebrew (Linuxbrew)](https://brew.sh/) and Node.js version management on Linux, built with Tauri v2, Vue 3, and TypeScript.
 
 ## Install
 
@@ -20,6 +20,8 @@ rm -f ~/.local/bin/LinuxBrewer ~/.local/bin/LinuxBrewer.appimage
 
 ## Features
 
+### Homebrew
+
 - **Installed packages** — browse all formulas and casks with version info; filter by kind, search by name, or sort by name / kind / version
 - **Upgradable packages** — see what's outdated with old → new version diff; upgrade individually or all at once
 - **Package pinning** — pin packages to prevent them from being upgraded
@@ -32,6 +34,22 @@ rm -f ~/.local/bin/LinuxBrewer ~/.local/bin/LinuxBrewer.appimage
 - **Brew version & path** — toolbar displays the detected brew version; settings show the resolved binary path
 - **Panel descriptions** — each panel has an info icon that reveals a brief description of what the panel does
 - **Settings** — tabbed modal: Settings (custom brew path, language), Shortcuts, About, License
+
+### Node.js Version Management
+
+- **fnm / nvm auto-detection** — auto-detects [fnm](https://github.com/Schniz/fnm) or [nvm](https://github.com/nvm-sh/nvm); re-detect at any time
+- **LTS version grid** — cards for v16 through v24 showing installed version, current status, and default marker
+- **Install specific patch versions** — dropdown preloaded with all available patch versions from nodejs.org; install any exact version
+- **Update notifications** — refresh fetches the latest available version and highlights cards with available updates
+- **Multi-version management** — expand a card to see and manage all installed patch versions under a major; set default or uninstall individually
+- **Uninstall with confirmation** — prevents accidental removals
+- **Set as default** — checkbox to automatically set a newly installed version as the system default
+- **Copy bin path** — copy the resolved binary path of any installed version to clipboard
+- **Project file support** — read and write `.nvmrc` / `.node-version` files; pick a project folder with the native file dialog
+- **Non-LTS versions** — extra cards appear for any installed non-LTS majors
+
+### General
+
 - **Multilingual** — English / 中文, persisted across sessions
 - **Keyboard shortcuts** — `Ctrl+R` refresh · `Ctrl+K` search · `Ctrl+F` filter · `Ctrl+,` settings · `Escape` closes modals
 
@@ -58,10 +76,11 @@ src/
 │   ├── search.ts          # Search state + doSearch / enrichment
 │   ├── taps.ts            # Taps list + add/remove
 │   ├── settings.ts        # Custom brew path + language settings
-│   └── ui.ts              # UI state (toasts, confirm modal, detail modal)
+│   ├── ui.ts              # UI state (toasts, confirm modal, detail modal)
+│   └── nvm.ts             # Node.js version management (fnm/nvm) state + commands
 ├── types.ts               # Shared TypeScript interfaces
 ├── assets/global.css      # All styles
-├── App.vue                # Thin layout orchestrator
+├── App.vue                # Thin layout orchestrator (Homebrew + Node.js tabs)
 └── components/
     ├── AppToolbar.vue
     ├── SearchPanel.vue
@@ -70,6 +89,7 @@ src/
     ├── TapsPanel.vue
     ├── LogsDrawer.vue
     ├── BatchBar.vue
+    ├── NvmPanel.vue        # Node.js version management UI
     └── modals/
         ├── ConfirmModal.vue
         ├── DetailModal.vue
@@ -80,7 +100,8 @@ src-tauri/src/
 ├── lib.rs       # Entry point + command registration
 ├── types.rs     # Rust structs + ok/err helpers + BrewState cache
 ├── brew.rs      # Homebrew helpers + sync Tauri commands
-├── stream.rs    # brew_run_stream (async, tokio) + cancellation registry
+├── stream.rs    # brew_run_stream / nvm_run_stream (async, tokio) + cancellation registry
+├── nvm.rs       # fnm/nvm detection, version management, nodejs.org version fetching
 └── tray.rs      # System tray setup + update_tray command
 ```
 
@@ -110,6 +131,16 @@ The app auto-detects `brew` from the standard Linuxbrew and macOS paths:
 - `brew` (from `$PATH`)
 
 A custom path can be set in **Settings → Settings tab** if auto-detection fails.
+
+## Node.js Manager Detection
+
+The app auto-detects [fnm](https://github.com/Schniz/fnm) or [nvm](https://github.com/nvm-sh/nvm) from common install locations:
+
+**fnm** — checks `~/.fnm/fnm`, `~/.local/share/fnm/fnm`, and `fnm` on `$PATH`
+
+**nvm** — invoked via `bash -c "source ~/.nvm/nvm.sh && nvm ..."` to respect its shell-function nature
+
+Use the re-detect button (magnifying glass icon) in the Node.js tab if the manager is not found after installation.
 
 ## Author
 
